@@ -1,0 +1,36 @@
+
+#!/bin/bash
+PWD="/home/azureuser"
+cd $PWD
+#/usr/local/bin/virtualenv -q --python=python3 venv
+python3 -m venv venv1
+echo $PWD
+activate () {
+    . $PWD/venv1/bin/activate
+    pip install -r /tmp/tesenv/requirements.txt
+    pip list
+    whoami
+    deactivate
+}
+
+activate
+####
+
+
+
+    -------------------
+tar -cf backup.tar tesenv/
+mkdir /tmp/venv
+az storage blob download-batch --source agent --destination /tmp/venv --account-name csg100320013ea1adf2 --account-key "hExxK3dV0zilY8nrWtH+Xe/hkxt0me4E33Obff9ePWJA2c5qouNmciUS9Ws78H50SGPhqHlvKvssNm04tPw72w=="
+
+cp venv_script.sh /tmp/venv/
+
+az storage blob upload-batch --destination sourcevm --source /tmp/venv --account-name csg100320013ea1adf2 --account-key "hExxK3dV0zilY8nrWtH+Xe/hkxt0me4E33Obff9ePWJA2c5qouNmciUS9Ws78H50SGPhqHlvKvssNm04tPw72w=="
+
+
+az vm run-command invoke -g myResourceGroup -n myVm --command-id RunShellScript --scripts "az storage blob download-batch --source sourcevm --destination /tmp/ --account-name csg100320013ea1adf2 --account-key 'hExxK3dV0zilY8nrWtH+Xe/hkxt0me4E33Obff9ePWJA2c5qouNmciUS9Ws78H50SGPhqHlvKvssNm04tPw72w=='"
+extract the tar File
+chmod +x *.sh
+
+az run script 
+---------------
