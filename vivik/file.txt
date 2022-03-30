@@ -34,3 +34,33 @@ chmod +x *.sh
 
 az run script 
 ---------------
+
+
+
+
+pool:
+  # Needs to run on a host with terraform cli and can reach the tfe api
+  name: viv-poc
+
+trigger : none
+stages:
+- stage:
+  jobs: 
+    - job: subid_scan
+      steps:
+      - checkout: self
+      - task: AzureCLI@2
+        inputs:
+          azureSubscription: 'Rakesh_test_auto'
+          scriptType: 'bash'
+          scriptLocation: 'inlineScript'
+          # scriptPath: 'test.sh'
+          # arguments : '$(System.DefaultWorkingDirectory)/yy'
+          inlineScript: |
+            chmod +x test.sh
+            mkdir -p venv
+            cp venv_script.sh venv
+            az storage blob download-batch --source agent --destination venv --account-name csg100320013ea1adf2 --account-key "lHe+NybpEQp4/r5gM/n"
+            az storage blob upload-batch --destination sourcevm --source venv --account-name csg100320013ea1adf2 --account-key "lHe+NybpEQp4/r5gM/n4wUVOpU"
+
+            
